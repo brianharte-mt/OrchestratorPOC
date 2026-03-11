@@ -1,0 +1,18 @@
+{
+  "name": "manifold-three-poc",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -w @manifold/api build && npm run -w @manifold/web build",
+    "dev": "concurrently \"npm run -w @manifold/api dev\" \"npm run -w @manifold/web dev\"",
+    "lint": "npm run -w @manifold/api lint && npm run -w @manifold/web lint",
+    "typecheck": "npm run -w @manifold/api typecheck && npm run -w @manifold/web typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "typescript": "^5.6.3"
+  }
+}
