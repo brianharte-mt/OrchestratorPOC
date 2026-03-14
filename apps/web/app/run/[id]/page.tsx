@@ -9,13 +9,14 @@ type Snapshot = {
   branches: Array<{ id: string; name: string; selected: boolean }>;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
+const apiUrl = (path: string) => (API_BASE ? `${API_BASE}${path}` : `/api${path}`);
 
 export default function RunPage({ params }: { params: { id: string } }) {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
 
   const load = async () => {
-    const res = await fetch(`${API}/run/${params.id}`);
+    const res = await fetch(apiUrl(`/run/${params.id}`));
     setSnapshot(await res.json());
   };
 
@@ -24,12 +25,12 @@ export default function RunPage({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   const heartbeat = async () => {
-    const res = await fetch(`${API}/run/${params.id}/heartbeat`, { method: "POST" });
+    const res = await fetch(apiUrl(`/run/${params.id}/heartbeat`), { method: "POST" });
     setSnapshot(await res.json());
   };
 
   const control = async (action: string, shell?: string) => {
-    const res = await fetch(`${API}/run/${params.id}/control`, {
+    const res = await fetch(apiUrl(`/run/${params.id}/control`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, shell })
