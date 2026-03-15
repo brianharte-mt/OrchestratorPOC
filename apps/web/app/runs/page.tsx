@@ -5,14 +5,15 @@ import { useEffect, useState } from "react";
 
 type Run = { id: string; title: string; brief: string; status: string; currentShell: string };
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
+const apiUrl = (path: string) => (API_BASE ? `${API_BASE}${path}` : `/api${path}`);
 
 export default function RunsPage() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [brief, setBrief] = useState("Create a launch campaign for Manifold Three.");
 
   const load = async () => {
-    const res = await fetch(`${API}/runs`);
+    const res = await fetch(apiUrl("/runs"));
     setRuns(await res.json());
   };
 
@@ -21,7 +22,7 @@ export default function RunsPage() {
   }, []);
 
   const createRun = async () => {
-    await fetch(`${API}/runs`, {
+    await fetch(apiUrl("/runs"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: "Operator submitted brief", brief })
